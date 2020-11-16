@@ -1,0 +1,53 @@
+<html>
+    <head>
+
+    </head>
+    <body><input type='file' accept='text/plain' onchange='openFile(event)'><br>
+        <img id='output'>
+        
+            
+<script>
+  var openFile = function(event) {
+    var input = event.target;
+    var new_str;
+    var final_string = "";
+
+    var reader = new FileReader();
+    reader.onload = function(){
+      var text = reader.result;
+      
+      var lines = text.split("EYE");
+      for(var i = 0;i < lines.length;i++){
+        //code here using lines[i] which will give you each line
+        var text = lines[i];
+        var val = text.indexOf("]"); 
+        if(val != -1){
+          new_str = text.substring(1,val);
+        if(i==lines.length-1){
+          final_string = final_string + new_str;
+          }
+          else{
+            final_string = final_string + new_str+',';
+        }
+          
+        }        
+      }
+      final_string = '['+final_string+']';
+
+      console.log(final_string);
+
+            var obj1 = JSON.parse(final_string);
+
+      for(var i = 0; i < obj1.length; i++){
+        console.log(obj1[i].miny);   
+    }
+
+    };
+    reader.readAsText(input.files[0]);
+    
+  };
+</script>
+
+
+    </body>
+</html>
