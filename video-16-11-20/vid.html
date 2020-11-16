@@ -43,7 +43,13 @@ var openFile = function(event) {
 
        for(var i = 0;i<obj1.length;i++){
           
-             messages[i] = {time:""+obj1[i].timestamp,minx:""+obj1[i].minx ,miny:""+obj1[i].miny, maxx:""+obj1[i].maxx, maxy:""+obj1[i].maxy,label:""+obj1[i].label};
+             messages[i] = {time:""+obj1[i].timestamp,
+                            minx:""+obj1[i].minx ,
+                            miny:""+obj1[i].miny, 
+                            maxx:""+obj1[i].maxx, 
+                            maxy:""+obj1[i].maxy,
+                            label:""+obj1[i].label, 
+                            confidence:""+obj1[i].confidence};
        }
 
     canvasApp();
@@ -59,6 +65,7 @@ var videoDiv;
 function eventWindowLoaded() {
 
    videoElement = document.createElement("video");
+   videoElement.setAttribute("style", "float:right; width:1200px; height600px;");
    videoDiv = document.createElement('div');
    document.body.appendChild(videoDiv);
    videoDiv.appendChild(videoElement);
@@ -118,6 +125,7 @@ function canvasApp() {
       //video
       context.drawImage(videoElement , 0, 0);
       
+      
 
       //Display Message
       for (var i =0; i < messages.length ; i++) {
@@ -130,19 +138,31 @@ function canvasApp() {
             // context.fillStyle = "#FFFF00";
             // context.fillText  (tempMessage.message,  tempMessage.x ,tempMessage.y);
 
-            // circle
-            context1.beginPath();
-            context1.rect(tempMessage.minx, tempMessage.miny, tempMessage.maxx, tempMessage.maxy);
-            context1.lineWidth = 1;
-            context1.strokeStyle = '#FFFF00';
-            context1.stroke();
+            //circle
+            context.beginPath();
+            context.rect(tempMessage.minx, tempMessage.miny, tempMessage.maxx, tempMessage.maxy);
+            context.lineWidth = 1;
+            context.strokeStyle = '#FFFF00';
+            context.stroke();
 
-            context1.fillStyle = "#FFFF00";
-            context1.font = "30px sans";
-            context1.fillText  ("" + tempMessage.label,  10 ,590);
-            context1.font = "10px sans";
-            context1.fillText  ("Label:" + tempMessage.label,  tempMessage.minx ,tempMessage.miny);
-               }
+            context.fillStyle = "#FFFF00";
+            context.font = "30px sans";
+            context.fillText  ("" + tempMessage.label,  10 ,590);
+            context.font = "20px sans";
+            context.fillText  ("Confidence: " + tempMessage.confidence,  150 ,590);
+            context.font = "15px sans";
+            context.fillText  ("Label:" + tempMessage.label,  tempMessage.minx ,tempMessage.miny);
+
+            context.fillStyle = "#FFFFFF";
+            context.font = "15px sans";
+            context.fillText  ("Duration:" + videoElement.duration,  400 ,570);
+            context.fillText  ("Current time:" + videoElement.currentTime,  660 ,570);
+            context.fillText  ("Loop: " + videoElement.loop,  400 ,590);
+            context.fillText  ("Autoplay: " + videoElement.autoplay,  480 ,590);
+            context.fillText  ("Muted: " + videoElement.muted,  560 ,570);
+            context.fillText  ("Controls: " + videoElement.controls,  600 ,590);
+            context.fillText  ("Volume: " + videoElement.volume,  720 ,590);
+          }
       }
 
    }
@@ -153,26 +173,52 @@ function canvasApp() {
       
       let unix_timestamp = messages[j].time - initial_timestamp;
       
-var date = new Date(unix_timestamp * 1000);
+      var date = new Date(unix_timestamp * 1000);
 
-var seconds = "0" + date.getSeconds();
+      var seconds = "0" + date.getSeconds();
 
-var formattedTime = seconds.substr(-2);
-messages[j].time = formattedTime;
-console.log(formattedTime);
+      var formattedTime = seconds.substr(-2);
+      messages[j].time = formattedTime;
+      console.log(formattedTime);
    }
    
    
 
-   var theCanvas = document.getElementById("canvasOne");
-   var context = theCanvas.getContext("2d");
-   var context1 = theCanvas.getContext("2d");
+  var theCanvas = document.getElementById("canvasOne");
+  var context = theCanvas.getContext("2d");
+ //var context1 = theCanvas.getContext("2d");
+  videoElement.play();
+
+  var isPaused = false;
+  window.setInterval(function(){
+    if(!isPaused){
+      drawScreen();
+    }
+  }, 33);
+
+  function pauseOrPlay(){
+    if(!isPaused){
+      isPaused = true;
+      videoElement.pause();
+    }else{
+      isPaused = false;
       videoElement.play();
+    }
+  }
 
-      setInterval(drawScreen, 33);
-  
-   
+  function fullscreen(){
+       var el = document.getElementById('canvasOne');
 
+       if(el.webkitRequestFullScreen) {
+           el.webkitRequestFullScreen();
+       }
+      else {
+         el.mozRequestFullScreen();
+      }            
+  }
+
+  theCanvas.addEventListener("dblclick",fullscreen);
+  theCanvas.addEventListener("click",pauseOrPlay);
 }
 
 </script>

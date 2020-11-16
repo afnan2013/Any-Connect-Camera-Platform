@@ -73,7 +73,7 @@ function canvasApp() {
       //video
       context.drawImage(videoElement , 0, 0);
       // Text
-      context.fillStyle = "#000000";
+      context.fillStyle = "#ffffff";
       context.font = "10px sans";
       context.fillText  ("Duration:" + videoElement.duration,  10 ,280);
       context.fillText  ("Current time:" + videoElement.currentTime,  260 ,280);
@@ -112,13 +112,25 @@ function canvasApp() {
    var context = theCanvas.getContext("2d");
 
   
-      videoElement.play();
+    videoElement.play();
 
-      setInterval(drawScreen, 33);
+    setInterval(drawScreen, 100);
 
-   
+   function fullscreen(){
+           var el = document.getElementById('canvasOne');
+ 
+           if(el.webkitRequestFullScreen) {
+               el.webkitRequestFullScreen();
+           }
+          else {
+             el.mozRequestFullScreen();
+          }            
+    }
+ 
+    theCanvas.addEventListener("click",fullscreen);
 
 }
+
 
 </script>
 
